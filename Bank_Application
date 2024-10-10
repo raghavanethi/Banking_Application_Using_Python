@@ -1,0 +1,136 @@
+
+class BankAccount:
+    """Represents a bank account with basic banking operations."""
+
+    accounts = {}
+
+    def __init__(self, account_number, name, date_of_birth, phone_number, city):
+        """Initializes a BankAccount object."""
+        self.account_number = account_number
+        self.name = name
+        self.date_of_birth = date_of_birth
+        self.phone_number = phone_number
+        self.city = city
+        self.balance = 0
+        self.transactions = []
+
+        BankAccount.accounts[account_number] = {
+            "name": name,
+            "date_of_birth": date_of_birth,
+            "phone_number": phone_number,
+            "city": city,
+            "balance": self.balance,
+        }
+
+    def create_account(self):
+        """Prints a success message after creating an account."""
+        print("Account created successfully.")
+
+    @staticmethod
+    def get_account_details(account_number):
+        """Displays account details if the account number exists."""
+        if account_number in BankAccount.accounts:
+            account = BankAccount.accounts[account_number]
+            print("-----------PERSONAL DETAILS----------------")
+            print("Name:", account["name"])
+            print("Account Number:", account_number)
+            print("DOB:", account["date_of_birth"])
+            print("City:", account["city"])
+            print("Phone Number:", account["phone_number"])
+            print("Available Balance:", account["balance"])
+            print("-------------------------------------------")
+        else:
+            print("Invalid account number")
+            print("-------------------------------------------")
+
+    def check_balance(self):
+        """Displays the available balance."""
+        print("---------BALANCE--------------")
+        print("Name:", self.name)
+        print("Available Balance:", self.balance)
+
+    def withdraw_amount(self, amount):
+        """Withdraws the specified amount if sufficient balance exists."""
+        if self.balance >= amount:
+            self.balance -= amount
+            BankAccount.accounts[self.account_number]["balance"] -= amount
+            self.transactions.append(["withdrawal", amount])
+            print("Withdrawn Amount:", amount)
+            print("Available balance:", self.balance)
+            print("-------------------------------------------")
+        else:
+            print("Insufficient funds")
+            print("-------------------------------------------")
+
+    def deposit_amount(self, amount):
+        """Deposits the specified amount."""
+        self.balance += amount
+        BankAccount.accounts[self.account_number]["balance"] += amount
+        self.transactions.append(["deposit", amount])
+        print("Deposited Amount:", amount)
+        print("Available balance:", self.balance)
+        print("-------------------------------------------")
+
+    def transfer_funds(self, recipient_account_number, amount):
+        """Transfers funds to the specified recipient account."""
+        if self.balance >= amount:
+            if recipient_account_number in BankAccount.accounts:
+                self.balance -= amount
+                BankAccount.accounts[self.account_number]["balance"] -= amount
+                BankAccount.accounts[recipient_account_number]["balance"] += amount
+                self.transactions.append(["fund transfer", amount])
+                print("Fund transfer of", amount, "successful to", BankAccount.accounts[recipient_account_number]["name"])
+                print("Available balance:", self.balance)
+                print("-------------------------------------------")
+            else:
+                print("Invalid recipient account number")
+                print("-------------------------------------------")
+        else:
+            print("Insufficient funds")
+            print("-------------------------------------------")
+
+    def view_transactions(self):
+        """Displays transaction history."""
+        print("Transactions:")
+        for transaction in self.transactions:
+            print(*transaction)
+        print("-------------------------------------------")
+
+def main():
+    account1 = BankAccount(12345678, "John Doe", "01-01-2000", 1234567890, "New York")
+    account2 = BankAccount(23456789, "Jane Doe", "01-01-2001", 9876543210, "Los Angeles")
+
+    while True:
+        print("Bank Services:")
+        print("1. Deposit")
+        print("2. Withdraw")
+        print("3. Fund Transfer")
+        print("4. Balance Enquiry")
+        print("5. Transaction History")
+        print("6. Account Details")
+        print("7. Exit")
+
+        choice = int(input("Enter your option: "))
+
+        if choice == 1:
+            amount = int(input("Enter amount to deposit: "))
+            account1.deposit_amount(amount)
+        elif choice == 2:
+            amount = int(input("Enter amount to withdraw: "))
+            account1.withdraw_amount(amount)
+        elif choice == 3:
+            amount = int(input("Enter amount to transfer: "))
+            account1.transfer_funds(23456789, amount)
+        elif choice == 4:
+            account1.check_balance()
+        elif choice == 5:
+            account1.view_transactions()
+        elif choice == 6:
+            BankAccount.get_account_details(12345678)
+        elif choice == 7:
+            break
+        else:
+            print("Invalid option. Please choose again.")
+
+if __name__ == "__main__":
+```
